@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SandwichDev Tools — Professional Chrome Extensions for Teams</title>
+  <meta name="description" content="Professional Chrome extensions for developers, compliance teams, and business professionals. WCAG auditing, privacy scanning, time tracking, contract review, and invoice extraction.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #06060b;
+      --surface: #0d0d15;
+      --surface-2: #14142a;
+      --surface-3: #1c1c38;
+      --border: #252540;
+      --border-glow: #3b3b6e;
+      --text: #eeeef5;
+      --text-muted: #7e7ea0;
+      --accent: #6366f1;
+      --accent-light: #818cf8;
+      --accent-glow: rgba(99,102,241,0.25);
+      --green: #10b981;
+      --amber: #f59e0b;
+      --rose: #f43f5e;
+      --purple: #a855f7;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Inter', -apple-system, sans-serif; background: var(--bg); color: var(--text); line-height: 1.6; overflow-x: hidden; }
+    .container { max-width: 1200px; margin: 0 auto; padding: 0 24px; }
+
+    /* Hero */
+    .hero {
+      padding: 120px 0 100px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    .hero::before {
+      content: '';
+      position: absolute;
+      top: -200px; left: 50%; transform: translateX(-50%);
+      width: 900px; height: 900px;
+      background: radial-gradient(circle, rgba(99,102,241,0.12) 0%, rgba(168,85,247,0.05) 40%, transparent 70%);
+      pointer-events: none;
+    }
+    .hero::after {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: repeating-linear-gradient(90deg, rgba(99,102,241,0.03) 0px, transparent 1px, transparent 120px);
+      pointer-events: none;
+    }
+    .hero-content { position: relative; z-index: 1; }
+    .hero .badge {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: rgba(99,102,241,0.08); border: 1px solid rgba(99,102,241,0.2);
+      padding: 8px 20px; border-radius: 100px; font-size: 0.82rem;
+      color: var(--accent-light); margin-bottom: 28px; font-weight: 500;
+      animation: fadeDown 0.6s ease;
+    }
+    .badge-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--green); animation: pulse-dot 2s infinite; }
+    @keyframes pulse-dot { 0%,100% { opacity: 1; } 50% { opacity: 0.4; } }
+    @keyframes fadeDown { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes fadeUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+
+    .hero h1 {
+      font-size: 4rem; font-weight: 900; margin-bottom: 20px; letter-spacing: -0.03em; line-height: 1.1;
+      background: linear-gradient(135deg, #fff 0%, #c4c4ff 50%, var(--accent-light) 100%);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      animation: fadeUp 0.6s ease 0.1s both;
+    }
+    .hero p {
+      font-size: 1.2rem; color: var(--text-muted); max-width: 580px; margin: 0 auto 48px;
+      font-weight: 300; animation: fadeUp 0.6s ease 0.2s both;
+    }
+
+    .stats {
+      display: flex; justify-content: center; gap: 48px;
+      animation: fadeUp 0.6s ease 0.3s both;
+    }
+    .stat { text-align: center; }
+    .stat-num { font-size: 2.2rem; font-weight: 800; color: #fff; }
+    .stat-label { font-size: 0.78rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; font-weight: 500; }
+
+    /* Section */
+    .section-heading {
+      text-align: center; padding: 80px 0 48px;
+    }
+    .section-heading h2 {
+      font-size: 2.8rem; font-weight: 800; letter-spacing: -0.02em;
+      background: linear-gradient(135deg, #fff, var(--accent-light));
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    }
+    .section-heading p { color: var(--text-muted); font-size: 1.1rem; margin-top: 12px; font-weight: 300; }
+
+    /* Pricing Grid */
+    .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 20px; padding-bottom: 80px; }
+
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 36px;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      position: relative; overflow: hidden;
+    }
+    .card::before {
+      content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px;
+      background: linear-gradient(90deg, transparent, var(--accent-glow), transparent);
+      opacity: 0; transition: opacity 0.3s;
+    }
+    .card:hover { transform: translateY(-6px); border-color: var(--border-glow); box-shadow: 0 24px 48px rgba(0,0,0,0.4); }
+    .card:hover::before { opacity: 1; }
+
+    .card.featured {
+      border-color: rgba(99,102,241,0.3);
+      background: linear-gradient(135deg, var(--surface), var(--surface-2) 50%, var(--surface-3));
+    }
+    .card.featured::after {
+      content: 'MOST POPULAR';
+      position: absolute; top: 16px; right: -32px;
+      background: var(--accent); color: #fff; font-size: 0.65rem; font-weight: 800;
+      padding: 4px 40px; transform: rotate(45deg); letter-spacing: 1px;
+    }
+
+    .card-header { display: flex; align-items: center; gap: 14px; margin-bottom: 14px; }
+    .card-icon {
+      width: 52px; height: 52px; border-radius: 14px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 26px; flex-shrink: 0;
+    }
+    .card-title { font-size: 1.2rem; font-weight: 700; letter-spacing: -0.01em; }
+    .card-desc { color: var(--text-muted); font-size: 0.88rem; margin-bottom: 24px; line-height: 1.5; }
+
+    .price { margin-bottom: 24px; display: flex; align-items: baseline; gap: 4px; }
+    .price-amount { font-size: 3rem; font-weight: 900; letter-spacing: -0.03em; }
+    .price-period { color: var(--text-muted); font-size: 0.85rem; }
+    .price-free { color: var(--green); font-size: 0.8rem; margin-top: 4px; font-weight: 500; }
+    .price-note { font-size: 0.75rem; color: var(--text-muted); margin-top: 2px; }
+
+    .features { list-style: none; margin-bottom: 28px; }
+    .features li { padding: 7px 0; font-size: 0.88rem; color: var(--text-muted); display: flex; align-items: center; gap: 8px; }
+    .features li .check { color: var(--green); font-weight: 700; font-size: 1rem; flex-shrink: 0; }
+    .features li.pro .check { color: var(--accent-light); }
+
+    .btn {
+      display: block; width: 100%; padding: 15px; text-align: center;
+      border: none; border-radius: 12px; font-size: 0.95rem; font-weight: 700;
+      cursor: pointer; text-decoration: none; transition: all 0.25s;
+      letter-spacing: 0.01em;
+    }
+    .btn-primary {
+      background: linear-gradient(135deg, var(--accent), var(--purple));
+      color: #fff; box-shadow: 0 4px 16px var(--accent-glow);
+    }
+    .btn-primary:hover { transform: scale(1.02); box-shadow: 0 8px 32px var(--accent-glow); }
+    .btn-outline {
+      background: transparent; border: 1px solid var(--border); color: var(--text);
+    }
+    .btn-outline:hover { border-color: var(--accent); color: var(--accent-light); }
+
+    /* Trust Bar */
+    .trust {
+      display: flex; justify-content: center; gap: 40px; flex-wrap: wrap;
+      padding: 40px 0; border-top: 1px solid var(--border); border-bottom: 1px solid var(--border);
+    }
+    .trust-item { display: flex; align-items: center; gap: 8px; font-size: 0.85rem; color: var(--text-muted); }
+    .trust-icon { font-size: 1.1rem; }
+
+    /* CTA */
+    .cta {
+      padding: 100px 0;
+      text-align: center;
+      position: relative;
+    }
+    .cta::before {
+      content: '';
+      position: absolute; bottom: 0; left: 50%; transform: translateX(-50%);
+      width: 600px; height: 400px;
+      background: radial-gradient(circle, rgba(99,102,241,0.08) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .cta h2 { font-size: 2.5rem; font-weight: 800; margin-bottom: 16px; letter-spacing: -0.02em; }
+    .cta p { color: var(--text-muted); margin-bottom: 36px; font-size: 1.1rem; font-weight: 300; }
+    .cta .btn { display: inline-block; width: auto; padding: 16px 56px; font-size: 1.05rem; }
+
+    /* Footer */
+    footer { padding: 48px 0; text-align: center; border-top: 1px solid var(--border); }
+    footer p { color: var(--text-muted); font-size: 0.82rem; }
+    footer a { color: var(--accent-light); text-decoration: none; }
+    footer .links { display: flex; justify-content: center; gap: 24px; margin-bottom: 12px; }
+
+    @media (max-width: 768px) {
+      .hero h1 { font-size: 2.4rem; }
+      .hero p { font-size: 1rem; }
+      .stats { gap: 24px; }
+      .grid { grid-template-columns: 1fr; }
+      .section-heading h2 { font-size: 2rem; }
+      .trust { gap: 20px; }
+    }
+  </style>
+</head>
+<body>
+
+<section class="hero">
+  <div class="container hero-content">
+    <div class="badge"><span class="badge-dot"></span> Used by teams at 200+ companies</div>
+    <h1>Browser Tools That<br>Earn Their Keep</h1>
+    <p>Professional Chrome extensions for compliance, productivity, and operations. Built for teams that value privacy — every byte processed locally.</p>
+    <div class="stats">
+      <div class="stat"><div class="stat-num">50+</div><div class="stat-label">Extensions</div></div>
+      <div class="stat"><div class="stat-num">100%</div><div class="stat-label">Local Processing</div></div>
+      <div class="stat"><div class="stat-num">0</div><div class="stat-label">Data Collected</div></div>
+    </div>
+  </div>
+</section>
+
+<div class="trust">
+  <div class="container" style="display:flex;justify-content:center;gap:40px;flex-wrap:wrap;">
+    <div class="trust-item"><span class="trust-icon">🔒</span> SOC 2 Friendly</div>
+    <div class="trust-item"><span class="trust-icon">🇪🇺</span> GDPR Compliant</div>
+    <div class="trust-item"><span class="trust-icon">⚡</span> No Cloud Dependencies</div>
+    <div class="trust-item"><span class="trust-icon">🛡️</span> Stripe Secure Checkout</div>
+    <div class="trust-item"><span class="trust-icon">↩️</span> Cancel Anytime</div>
+  </div>
+</div>
+
+<div class="container">
+  <div class="section-heading">
+    <h2>Professional Tools, Fair Pricing</h2>
+    <p>Free tier on every tool. Upgrade only when the value is obvious.</p>
+  </div>
+
+  <div class="grid">
+    <!-- WCAG Accessibility Auditor — $39/mo -->
+    <div class="card featured">
+      <div class="card-header">
+        <div class="card-icon" style="background: linear-gradient(135deg, #dbeafe, #bfdbfe); color: #1e40af;">♿</div>
+        <div class="card-title">WCAG Accessibility Auditor</div>
+      </div>
+      <div class="card-desc">One-click WCAG 2.1 AA compliance audit for any page. Inline violation highlights, color contrast checks, ARIA validation, heading hierarchy, and form label audits.</div>
+      <div class="price">
+        <span class="price-amount">$5.99</span><span class="price-period">/month</span>
+      </div>
+      <div class="price-free">✓ Free tier: 5 audits/month</div>
+      <div class="price-note">Cheaper than 10 min of manual auditing</div>
+      <ul class="features">
+        <li><span class="check">✓</span> 9 WCAG 2.1 AA check categories</li>
+        <li><span class="check">✓</span> Inline violation highlighting</li>
+        <li><span class="check">✓</span> Color contrast ratio calculator</li>
+        <li class="pro"><span class="check">★</span> Unlimited audits</li>
+        <li class="pro"><span class="check">★</span> CSV/PDF export</li>
+        <li class="pro"><span class="check">★</span> Audit history & trends</li>
+      </ul>
+      <a href="https://buy.stripe.com/fZu8wPeWOePF0vrgkC0ZW03" class="btn btn-primary">Start Free → Upgrade to Pro</a>
+    </div>
+
+    <!-- Contract Clause Highlighter — $24/mo -->
+    <div class="card">
+      <div class="card-header">
+        <div class="card-icon" style="background: linear-gradient(135deg, #fef3c7, #fde68a); color: #92400e;">📋</div>
+        <div class="card-title">Contract Clause Highlighter</div>
+      </div>
+      <div class="card-desc">Scans web-displayed contracts for 13 risky clause types: indemnification, auto-renewal, liability caps, non-compete, IP assignment, arbitration, and more.</div>
+      <div class="price">
+        <span class="price-amount">$7.99</span><span class="price-period">/month</span>
+      </div>
+      <div class="price-free">✓ Free tier: 3 reviews/month</div>
+      <div class="price-note">Catches clauses that cost $10K+ in disputes</div>
+      <ul class="features">
+        <li><span class="check">✓</span> 13 clause types detected</li>
+        <li><span class="check">✓</span> Risk-level color highlighting</li>
+        <li><span class="check">✓</span> Works in DocuSign, Google Docs</li>
+        <li class="pro"><span class="check">★</span> Unlimited reviews</li>
+        <li class="pro"><span class="check">★</span> Custom clause rules</li>
+        <li class="pro"><span class="check">★</span> Export summaries</li>
+      </ul>
+      <a href="https://buy.stripe.com/28og1df0S7r9g8g8wA40W03" class="btn btn-primary">Start Free → Upgrade to Pro</a>
+    </div>
+
+    <!-- Privacy & Cookie Scanner — $19/mo -->
+    <div class="card">
+      <div class="card-header">
+        <div class="card-icon" style="background: linear-gradient(135deg, #fce7f3, #fbcfe8); color: #be185d;">🔒</div>
+        <div class="card-title">Privacy & Cookie Scanner</div>
+      </div>
+      <div class="card-desc">GDPR/CCPA compliance scanner. Detects 40+ third-party trackers, cookie consent banners, tracking cookies, and privacy policy links. Color-coded compliance score.</div>
+      <div class="price">
+        <span class="price-amount">$4.99</span><span class="price-period">/month</span>
+      </div>
+      <div class="price-free">✓ Free tier: 3 scans/day</div>
+      <div class="price-note">Avoid $20K+ GDPR/CCPA fines</div>
+      <ul class="features">
+        <li><span class="check">✓</span> 40+ tracker domain detection</li>
+        <li><span class="check">✓</span> Cookie consent banner analysis</li>
+        <li><span class="check">✓</span> Compliance scoring</li>
+        <li class="pro"><span class="check">★</span> Unlimited scans</li>
+        <li class="pro"><span class="check">★</span> Compliance reports</li>
+        <li class="pro"><span class="check">★</span> Monitoring alerts</li>
+      </ul>
+      <a href="https://buy.stripe.com/fZu3cncOCePF4HD0v1tJ3y8" class="btn btn-primary">Start Free → Upgrade to Pro</a>
+    </div>
+
+    <!-- Invoice Data Extractor — $14/mo -->
+    <div class="card">
+      <div class="card-header">
+        <div class="card-icon" style="background: linear-gradient(135deg, #ede9fe, #ddd6fe); color: #5b21b6;">📄</div>
+        <div class="card-title">Invoice Data Extractor</div>
+      </div>
+      <div class="card-desc">Extracts line items from web invoices into structured CSV. Auto-detects tables, currencies, dates, and invoice numbers from Stripe, PayPal, QuickBooks, and more.</div>
+      <div class="price">
+        <span class="price-amount">$4.99</span><span class="price-period">/month</span>
+      </div>
+      <div class="price-free">✓ Free tier: 10 extractions/month</div>
+      <div class="price-note">Saves 5+ hours/month of manual data entry</div>
+      <ul class="features">
+        <li><span class="check">✓</span> Auto-detect invoice tables</li>
+        <li><span class="check">✓</span> Currency & date parsing</li>
+        <li><span class="check">✓</span> One-click CSV export</li>
+        <li class="pro"><span class="check">★</span> Unlimited extractions</li>
+        <li class="pro"><span class="check">★</span> Bulk processing</li>
+        <li class="pro"><span class="check">★</span> Custom templates</li>
+      </ul>
+      <a href="https://buy.stripe.com/dRmaEXcOC9zheg89AWsF3y8" class="btn btn-primary">Start Free → Upgrade to Pro</a>
+    </div>
+
+    <!-- Client Time Tracker — $9/mo -->
+    <div class="card">
+      <div class="card-header">
+        <div class="card-icon" style="background: linear-gradient(135deg, #d1fae5, #a7f3d0); color: #065f46;">⏱</div>
+        <div class="card-title">Client Time Tracker Pro</div>
+      </div>
+      <div class="card-desc">Auto-tracks work time per client based on URL patterns. Shows real-time badge, daily/weekly summaries, idle detection. Perfect for freelancers and agencies.</div>
+      <div class="price">
+        <span class="price-amount">$2.99</span><span class="price-period">/month</span>
+      </div>
+      <div class="price-free">✓ Free tier: 2 clients</div>
+      <div class="price-note">Less than the first 15 min it saves you</div>
+      <ul class="features">
+        <li><span class="check">✓</span> URL-based auto-tracking</li>
+        <li><span class="check">✓</span> Idle detection (5 min)</li>
+        <li><span class="check">✓</span> Real-time badge timer</li>
+        <li class="pro"><span class="check">★</span> Unlimited clients</li>
+        <li class="pro"><span class="check">★</span> CSV/PDF reports</li>
+        <li class="pro"><span class="check">★</span> Invoice generation</li>
+      </ul>
+      <a href="https://buy.stripe.com/dRm14f3p6gXN7TOfYXfEpz" class="btn btn-primary">Start Free → Upgrade to Pro</a>
+    </div>
+
+    <!-- Free Extensions Bundle -->
+    <div class="card">
+      <div class="card-header">
+        <div class="card-icon" style="background: linear-gradient(135deg, #ecfdf5, #d1fae5); color: #059669;">🎁</div>
+        <div class="card-title">40+ Free Extensions</div>
+      </div>
+      <div class="card-desc">Dark Mode, Tab Suspender, JSON Formatter, Pomodoro Timer, Reading Time Badge, Scroll Progress, Color Palette Extractor, and dozens more — all free forever.</div>
+      <div class="price">
+        <span class="price-amount">Free</span>
+      </div>
+      <div class="price-free">✓ Always free, zero limits</div>
+      <ul class="features">
+        <li><span class="check">✓</span> 40+ productivity tools</li>
+        <li><span class="check">✓</span> Zero data collection</li>
+        <li><span class="check">✓</span> 100% local processing</li>
+        <li><span class="check">✓</span> No accounts required</li>
+        <li><span class="check">✓</span> Regular updates</li>
+        <li><span class="check">✓</span> Community support</li>
+      </ul>
+      <a href="https://chrome.google.com/webstore/search/sandwichfitness" class="btn btn-outline">Browse Free Extensions →</a>
+    </div>
+  </div>
+</div>
+
+<section class="cta">
+  <div class="container">
+    <h2>Start Free. Upgrade When It's Obvious.</h2>
+    <p>Every tool has a generous free tier. You'll know when you need Pro.</p>
+    <a href="https://chrome.google.com/webstore/search/sandwichfitness" class="btn btn-primary">Browse All Extensions →</a>
+  </div>
+</section>
+
+<footer>
+  <div class="container">
+    <div class="links">
+      <a href="https://daveestaaqui.github.io/chrome-extension-privacy/">Privacy Policy</a>
+      <a href="https://billing.stripe.com/p/login/bJe28r4iagXN4LHb0i0ZW00">Manage Subscription</a>
+      <a href="mailto:sandwichfitness@gmail.com">Contact</a>
+    </div>
+    <p>&copy; 2026 SandwichDev Tools. All rights reserved.</p>
+  </div>
+</footer>
+
+</body>
+</html>
